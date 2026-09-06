@@ -1,0 +1,224 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Open House Check-In</title>
+<style>
+  :root{
+    --navy:#14283C;
+    --deep-navy:#0A1E3C;
+    --white:#FFFFFF;
+    --off-white:#F0F9FF;
+    --gray:#828282;
+    --light-gray:#CCCCCC;
+    --text:#1a1a1a;
+  }
+  *{box-sizing:border-box;}
+  body{
+    margin:0; font-family:'Poppins','Montserrat',Arial,sans-serif; background:var(--white); color:var(--text);
+  }
+  .topbar{background:var(--navy); padding:18px 20px; display:flex; align-items:center; gap:10px;}
+  .logo-kw{color:#9fb0c2; font-weight:800; font-size:22px; letter-spacing:1px;}
+  .logo-cary{color:var(--white); font-weight:800; font-size:22px; letter-spacing:1px; margin-left:2px;}
+  .logo-sub{color:#9fb0c2; font-size:10px; letter-spacing:2px; margin-top:-2px;}
+  .redbar{height:6px; background:var(--deep-navy);}
+  .wrap{max-width:480px; margin:0 auto; padding:24px 20px 60px;}
+  .headline{font-weight:800; font-size:15px; letter-spacing:1.5px; text-transform:uppercase; color:var(--navy); margin:0 0 4px;}
+  h1{font-size:24px; margin:0 0 6px; line-height:1.25; color:var(--navy);}
+  .address{font-size:18px; color:var(--text); margin:0 0 20px; font-weight:600;}
+  .sub{color:#555; font-size:14px; margin-bottom:24px;}
+  label{display:block; font-weight:700; font-size:13px; margin:18px 0 6px; color:var(--navy);}
+  input[type=text], input[type=tel], input[type=email]{
+    width:100%; padding:12px 14px; font-size:16px; border:1px solid var(--light-gray); border-radius:6px;
+  }
+  .choice-row{display:flex; gap:10px; margin-top:6px;}
+  .choice-btn{
+    flex:1; padding:12px 10px; text-align:center; border:2px solid var(--light-gray); border-radius:6px;
+    font-weight:700; font-size:14px; cursor:pointer; background:var(--white); color:var(--text);
+  }
+  .choice-btn.selected{border-color:var(--navy); background:var(--navy); color:var(--white);}
+  .section{display:none;}
+  .section.visible{display:block;}
+  .submit-btn{
+    width:100%; margin-top:28px; padding:15px; background:var(--navy); color:var(--white); border:none;
+    border-radius:6px; font-size:16px; font-weight:800; letter-spacing:0.5px; cursor:pointer; text-transform:uppercase;
+  }
+  .submit-btn:disabled{opacity:0.5;}
+  .err{color:#B40101; font-size:13px; margin-top:6px; display:none;}
+  .thankyou{display:none; text-align:center; padding:60px 20px;}
+  .thankyou h2{font-size:24px; color:var(--navy);}
+  .thankyou p{color:#555; font-size:15px; line-height:1.5;}
+  .foot{margin-top:40px; text-align:center; color:var(--gray); font-size:11px; line-height:1.6;}
+  .loading{text-align:center; padding:60px 20px; color:var(--gray);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div><span class="logo-kw">kw</span><span class="logo-cary">CARY</span></div>
+    <div class="logo-sub">KELLERWILLIAMS. REALTY</div>
+  </div>
+</div>
+<div class="redbar"></div>
+
+<div class="wrap">
+  <div id="loading" class="loading">Loading...</div>
+
+  <div id="formArea" style="display:none;">
+    <p class="headline">Open House</p>
+    <h1>Welcome — thanks for stopping by!</h1>
+    <p class="address" id="addressLine"></p>
+    <p class="sub">Please take a quick moment to check in before touring the property.</p>
+
+    <label>Full Name *</label>
+    <input type="text" id="fullName" autocomplete="name">
+
+    <label>Phone Number *</label>
+    <input type="tel" id="phone" autocomplete="tel" placeholder="(919) 555-0123">
+
+    <label>Email Address *</label>
+    <input type="email" id="email" autocomplete="email">
+
+    <label>Are you currently working with a real estate agent? *</label>
+    <div class="choice-row">
+      <div class="choice-btn" data-field="workingWithAgent" data-value="Yes">Yes</div>
+      <div class="choice-btn" data-field="workingWithAgent" data-value="No">No</div>
+    </div>
+
+    <div class="section" id="agentSection">
+      <label>Agent's Name *</label>
+      <input type="text" id="agentName">
+      <label>Agent's Brokerage / Firm *</label>
+      <input type="text" id="agentBrokerage">
+    </div>
+
+    <div class="section" id="similarSection">
+      <label>Would you like to receive an exclusive weekly list of similar homes in this area?</label>
+      <div class="choice-row">
+        <div class="choice-btn" data-field="wantsSimilarHomes" data-value="Yes">Yes, please!</div>
+        <div class="choice-btn" data-field="wantsSimilarHomes" data-value="No">No thanks</div>
+      </div>
+    </div>
+
+    <div class="err" id="errMsg">Please fill in your name, phone, and email.</div>
+    <button class="submit-btn" id="submitBtn">Check In</button>
+
+    <div class="foot">
+      Keller Williams Realty Cary · 525 New Waverly Pl Ste 202, Cary, NC 27518<br>
+      Each office is independently owned and operated. Equal Housing Opportunity.
+    </div>
+  </div>
+
+  <div class="thankyou" id="thankyou">
+    <h2>Thanks for checking in!</h2>
+    <p id="thankyouMsg">Enjoy your tour. If you have any questions, don't hesitate to reach out.</p>
+  </div>
+</div>
+
+<script>
+  // Point at the Apps Script web app deployment for this Sheet.
+  var API_URL = "https://script.google.com/macros/s/AKfycbzXwrDB3n3rhZpZs9s6HKV8IJZKUHd76YAuIV5Kg2gEJRtktVx62J3rgMwSR_vYrJHVUg/exec";
+
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get('t');
+  var openHouse = null;
+  var selections = {};
+
+  function jsonp(url, cb) {
+    var cbName = 'ohcb_' + Date.now();
+    window[cbName] = function(data) {
+      cb(data);
+      delete window[cbName];
+      script.remove();
+    };
+    var script = document.createElement('script');
+    script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + cbName;
+    document.body.appendChild(script);
+  }
+
+  function showError(msg) {
+    document.getElementById('loading').style.display = 'none';
+    document.getElementById('formArea').style.display = 'block';
+    document.getElementById('addressLine').textContent = '';
+    var err = document.getElementById('errMsg');
+    err.textContent = msg;
+    err.style.display = 'block';
+    document.getElementById('submitBtn').disabled = true;
+  }
+
+  if (!token) {
+    showError('This check-in link is missing its open house code — please ask the agent for the correct link.');
+  } else {
+    jsonp(API_URL + '?t=' + encodeURIComponent(token), function(resp) {
+      document.getElementById('loading').style.display = 'none';
+      if (!resp.ok) {
+        showError('We could not find this open house — please ask the agent for the correct link.');
+        return;
+      }
+      openHouse = resp.data;
+      document.getElementById('addressLine').textContent = openHouse.address;
+      document.getElementById('formArea').style.display = 'block';
+    });
+  }
+
+  document.querySelectorAll('.choice-btn').forEach(function(btn) {
+    btn.addEventListener('click', function() {
+      var field = btn.getAttribute('data-field');
+      var value = btn.getAttribute('data-value');
+      selections[field] = value;
+      document.querySelectorAll('.choice-btn[data-field="' + field + '"]').forEach(function(b) {
+        b.classList.toggle('selected', b === btn);
+      });
+      if (field === 'workingWithAgent') {
+        document.getElementById('agentSection').classList.toggle('visible', value === 'Yes');
+        document.getElementById('similarSection').classList.toggle('visible', value === 'No');
+      }
+    });
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', function() {
+    var fullName = document.getElementById('fullName').value.trim();
+    var phone = document.getElementById('phone').value.trim();
+    var email = document.getElementById('email').value.trim();
+    var err = document.getElementById('errMsg');
+
+    if (!fullName || !phone || !email || !selections.workingWithAgent) {
+      err.textContent = 'Please fill in your name, phone, email, and let us know if you\'re working with an agent.';
+      err.style.display = 'block';
+      return;
+    }
+    if (selections.workingWithAgent === 'Yes' &&
+        (!document.getElementById('agentName').value.trim() || !document.getElementById('agentBrokerage').value.trim())) {
+      err.textContent = "Please fill in your agent's name and brokerage.";
+      err.style.display = 'block';
+      return;
+    }
+    err.style.display = 'none';
+
+    var payload = {
+      action: 'submitCheckIn',
+      token: token,
+      fullName: fullName,
+      phone: phone,
+      email: email,
+      workingWithAgent: selections.workingWithAgent,
+      agentName: document.getElementById('agentName').value.trim(),
+      agentBrokerage: document.getElementById('agentBrokerage').value.trim(),
+      wantsSimilarHomes: selections.wantsSimilarHomes || ''
+    };
+
+    fetch(API_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      body: JSON.stringify(payload)
+    }).catch(function() {});
+
+    document.getElementById('formArea').style.display = 'none';
+    document.getElementById('thankyou').style.display = 'block';
+  });
+</script>
+
+</body>
+</html>
