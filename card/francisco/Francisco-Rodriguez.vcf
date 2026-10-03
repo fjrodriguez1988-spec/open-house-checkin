@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Rodriguez;Francisco;;;
+FN:Francisco Rodriguez
+ORG:Keller Williams Realty Cary
+TITLE:REALTOR
+TEL;TYPE=CELL,VOICE:+19194267984
+EMAIL;TYPE=WORK:fjrodriguez@kw.com
+URL:https://www.fjrodriguez.com
+ADR;TYPE=WORK:;;525 New Waverly Pl Ste 202;Cary;NC;27518;USA
+END:VCARD
