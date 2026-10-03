@@ -1,0 +1,11 @@
+BEGIN:VCARD
+VERSION:3.0
+N:Rodriguez;Maria;;;
+FN:Maria Rodriguez
+ORG:Keller Williams Realty Cary
+TITLE:REALTOR
+TEL;TYPE=CELL,VOICE:+19196715108
+EMAIL;TYPE=WORK:marialrodriguez@kw.com
+URL:https://marialrodriguez.kw.com
+ADR;TYPE=WORK:;;525 New Waverly Pl Ste 202;Cary;NC;27518;USA
+END:VCARD
