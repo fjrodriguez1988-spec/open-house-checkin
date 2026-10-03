@@ -50,6 +50,8 @@
   .thankyou h2{font-size:24px; color:var(--navy);}
   .thankyou p{color:#555; font-size:15px; line-height:1.5;}
   .foot{margin-top:40px; text-align:center; color:var(--gray); font-size:11px; line-height:1.6;}
+  .consent-fine{font-size:11px; color:#666; line-height:1.5; margin:10px 0 0;}
+  .sms-btn{display:inline-block; margin-top:22px; padding:14px 22px; border:2px solid var(--navy); border-radius:6px; color:var(--navy); font-weight:800; text-decoration:none; text-transform:uppercase; letter-spacing:0.5px; font-size:14px;}
   .loading{text-align:center; padding:60px 20px; color:var(--gray);}
 </style>
 </head>
@@ -102,6 +104,13 @@
       </div>
     </div>
 
+    <label id="consentLabel">Would you like us to text you about this home? *</label>
+    <div class="choice-row">
+      <div class="choice-btn" data-field="consentToText" data-value="Yes">Yes, text me</div>
+      <div class="choice-btn" data-field="consentToText" data-value="No">No thanks</div>
+    </div>
+    <p class="consent-fine" id="consentFine"></p>
+
     <div class="err" id="errMsg">Please fill in your name, phone, and email.</div>
     <button class="submit-btn" id="submitBtn">Check In</button>
 
@@ -114,6 +123,7 @@
   <div class="thankyou" id="thankyou">
     <h2>Thanks for checking in!</h2>
     <p id="thankyouMsg">Enjoy your tour. If you have any questions, don't hesitate to reach out.</p>
+    <a class="sms-btn" id="smsBtn" href="#" style="display:none;"></a>
   </div>
 </div>
 
@@ -138,6 +148,26 @@
     document.body.appendChild(script);
   }
 
+
+  var consentWording = '';
+  function hostFirst() { return (openHouse && openHouse.hostingAgent) || 'your agent'; }
+  function hostFull() { return hostFirst() + ' Rodriguez'; }
+  function setupConsent() {
+    consentWording = 'By tapping Yes, I agree that ' + hostFull() + ' of Keller Williams Realty Cary may text me at the number above about this home and my home search, including with an automated system. Consent is not required to tour or buy a home. Message and data rates may apply. Reply STOP at any time to opt out.';
+    document.getElementById('consentLabel').textContent = 'Would you like ' + hostFirst() + ' to text you about this home? *';
+    document.getElementById('consentFine').textContent = consentWording;
+  }
+  function setupSmsButton(firstName) {
+    var digits = String((openHouse && openHouse.agentPhone) || '').replace(/\D/g, '');
+    if (!digits) return;
+    if (digits.length === 10) digits = '1' + digits;
+    var msg = 'Hi ' + hostFirst() + ', this is ' + firstName + '. I just checked in at the open house at ' + openHouse.address + '.';
+    var btn = document.getElementById('smsBtn');
+    btn.href = 'sms:+' + digits + '?&body=' + encodeURIComponent(msg);
+    btn.textContent = 'Text ' + hostFirst();
+    btn.style.display = 'inline-block';
+  }
+
   function showError(msg) {
     document.getElementById('loading').style.display = 'none';
     document.getElementById('formArea').style.display = 'block';
@@ -159,6 +189,7 @@
       }
       openHouse = resp.data;
       document.getElementById('addressLine').textContent = openHouse.address;
+      setupConsent();
       document.getElementById('formArea').style.display = 'block';
     });
   }
@@ -184,8 +215,8 @@
     var email = document.getElementById('email').value.trim();
     var err = document.getElementById('errMsg');
 
-    if (!fullName || !phone || !email || !selections.workingWithAgent) {
-      err.textContent = 'Please fill in your name, phone, email, and let us know if you\'re working with an agent.';
+    if (!fullName || !phone || !email || !selections.workingWithAgent || !selections.consentToText) {
+      err.textContent = 'Please fill in your name, phone, email, and let us know if you\'re working with an agent and if you\'d like a text.';
       err.style.display = 'block';
       return;
     }
@@ -206,7 +237,9 @@
       workingWithAgent: selections.workingWithAgent,
       agentName: document.getElementById('agentName').value.trim(),
       agentBrokerage: document.getElementById('agentBrokerage').value.trim(),
-      wantsSimilarHomes: selections.wantsSimilarHomes || ''
+      wantsSimilarHomes: selections.wantsSimilarHomes || '',
+      consentToText: selections.consentToText,
+      consentWording: consentWording
     };
 
     fetch(API_URL, {
@@ -217,6 +250,10 @@
 
     document.getElementById('formArea').style.display = 'none';
     document.getElementById('thankyou').style.display = 'block';
+    if (selections.consentToText === 'Yes') {
+      document.getElementById('thankyouMsg').textContent = 'Enjoy your tour. ' + hostFirst() + ' will send you a quick text in a little bit. Questions about the home? Just ask.';
+    }
+    setupSmsButton(fullName.split(' ')[0]);
   });
 </script>
 
