@@ -123,7 +123,6 @@
   <div class="thankyou" id="thankyou">
     <h2>Thanks for checking in!</h2>
     <p id="thankyouMsg">Enjoy your tour. If you have any questions, don't hesitate to reach out.</p>
-    <a class="sms-btn" id="smsBtn" href="#" style="display:none;"></a>
   </div>
 </div>
 
@@ -253,7 +252,6 @@
     if (selections.consentToText === 'Yes') {
       document.getElementById('thankyouMsg').textContent = 'Enjoy your tour. ' + hostFirst() + ' will send you a quick text in a little bit. Questions about the home? Just ask.';
     }
-    setupSmsButton(fullName.split(' ')[0]);
   });
 </script>
 
