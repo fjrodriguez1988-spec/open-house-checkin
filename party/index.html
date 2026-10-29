@@ -125,8 +125,8 @@
 </div>
 
 <script>
-  var API_URL = "https://script.google.com/macros/s/AKfycbzXwrDB3n3rhZpZs9s6HKV8IJZKUHd76YAuIV5Kg2gEJRtktVx62J3rgMwSR_vYrJHVUg/exec";
-  // Party check-ins ride on the open house backend: one OpenHouses row with this token.
+  // Event Check-In backend (Maria's "Event Check-Ins" sheet), separate from the open house hub.
+  var API_URL = "https://script.google.com/macros/s/AKfycbykpU4GPDtDaK43rtaiCRrttrEyaCyIW3aiFjMZtsVX3Fed6YxEqYwBhLv83LQyf1k/exec";
   var params = new URLSearchParams(window.location.search);
   var token = params.get('t') || 'event-noche-latina-2026';
   var STORE_KEY = 'nl2026_entered_' + token;
@@ -247,22 +247,18 @@
     err.style.display = 'none';
     document.getElementById('submitBtn').disabled = true;
 
-    // Mapped onto the open house CheckIns columns (no backend change needed):
-    // workingWithAgent = marker, agentName = birthday, agentBrokerage = address,
-    // wantsSimilarHomes = group size, consentToText stays "No" so the open house
-    // text watcher never picks these rows up; the contact consent is recorded in consentWording.
     var payload = {
       action: 'submitCheckIn',
       token: token,
       fullName: v('fullName'),
       phone: v('phone'),
       email: v('email'),
-      workingWithAgent: 'Party check-in (' + lang.toUpperCase() + ')',
-      agentName: 'Birthday ' + v('bMonth') + '/' + v('bDay'),
-      agentBrokerage: v('address') ? 'Address ' + v('address') : '',
-      wantsSimilarHomes: 'Group ' + v('groupSize'),
-      consentToText: 'No',
-      consentWording: 'Party contact consent: AGREED. Adult 18+: YES. Wording: ' + T[lang].consent
+      birthday: v('bMonth') + '/' + v('bDay'),
+      address: v('address'),
+      groupSize: v('groupSize'),
+      language: lang.toUpperCase(),
+      adult18: true,
+      consentWording: T[lang].consent
     };
     fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).catch(function() {});
     try { localStorage.setItem(STORE_KEY, '1'); } catch (e) {}
