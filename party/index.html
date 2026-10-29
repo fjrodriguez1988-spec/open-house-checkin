@@ -95,9 +95,6 @@
     <label><span data-i18n="address"></span> <span class="opt" data-i18n="optional"></span></label>
     <input type="text" id="address" autocomplete="street-address">
 
-    <label><span data-i18n="group"></span> *</label>
-    <select id="groupSize"></select>
-
     <div class="check">
       <input type="checkbox" id="adult">
       <span data-i18n="adultCheck"></span>
@@ -140,11 +137,10 @@
       name: 'Full Name', phone: 'Phone Number', email: 'Email Address',
       birthday: 'Birthday (month and day only, no year needed)', month: 'Month', day: 'Day',
       address: 'Home Address', optional: '(optional, for our holiday card)',
-      group: 'How many people are with you tonight, including you?',
       adultCheck: 'I am 18 or older.',
       consent: 'By checking in, I agree that Freddy and Maria Rodriguez of Keller Williams Realty Cary may contact me by phone, text, or email, including photos from tonight and future events. Message and data rates may apply. Reply STOP at any time to opt out.',
       submit: 'Check In and Enter',
-      errFields: 'Please fill in your name, phone, email, birthday, and group size.',
+      errFields: 'Please fill in your name, phone, email, and birthday.',
       errAdult: 'The raffle is for adults 18 and older. Please check the box to confirm.',
       errConsent: 'Please check the box to agree so we can reach you if you win.',
       tyTitle: 'You are entered, good luck!',
@@ -161,11 +157,10 @@
       name: 'Nombre completo', phone: 'Teléfono', email: 'Correo electrónico',
       birthday: 'Cumpleaños (solo mes y día, no necesitamos el año)', month: 'Mes', day: 'Día',
       address: 'Dirección de su casa', optional: '(opcional, para nuestra tarjeta navideña)',
-      group: '¿Cuántas personas vienen con usted esta noche, incluyéndose?',
       adultCheck: 'Tengo 18 años o más.',
       consent: 'Al registrarme, acepto que Freddy y Maria Rodriguez de Keller Williams Realty Cary me contacten por teléfono, mensaje de texto o correo electrónico, incluyendo fotos de esta noche y futuros eventos. Pueden aplicar tarifas de mensajes y datos. Responda STOP en cualquier momento para no recibir más mensajes.',
       submit: 'Registrarme y participar',
-      errFields: 'Por favor llene su nombre, teléfono, correo, cumpleaños y cuántas personas vienen.',
+      errFields: 'Por favor llene su nombre, teléfono, correo y cumpleaños.',
       errAdult: 'La rifa es para adultos de 18 años o más. Por favor marque la casilla para confirmar.',
       errConsent: 'Por favor marque la casilla para aceptar y así poder avisarle si gana.',
       tyTitle: '¡Ya está participando, buena suerte!',
@@ -179,16 +174,13 @@
 
   function fillSelects() {
     var t = T[lang];
-    var m = document.getElementById('bMonth'), d = document.getElementById('bDay'), g = document.getElementById('groupSize');
-    var mv = m.value, dv = d.value, gv = g.value;
+    var m = document.getElementById('bMonth'), d = document.getElementById('bDay');
+    var mv = m.value, dv = d.value;
     m.innerHTML = '<option value="">' + t.month + '</option>' + t.months.map(function(x, i) { return '<option value="' + (i + 1) + '">' + x + '</option>'; }).join('');
     var days = '<option value="">' + t.day + '</option>';
     for (var i = 1; i <= 31; i++) days += '<option value="' + i + '">' + i + '</option>';
     d.innerHTML = days;
-    var gs = '<option value=""></option>';
-    for (var j = 1; j <= 10; j++) gs += '<option value="' + j + '">' + j + (j === 10 ? '+' : '') + '</option>';
-    g.innerHTML = gs;
-    m.value = mv; d.value = dv; g.value = gv;
+    m.value = mv; d.value = dv;
   }
 
   function applyLang() {
@@ -241,7 +233,7 @@
     var v = function(id) { return document.getElementById(id).value.trim(); };
     var err = document.getElementById('errMsg');
     function fail(msg) { err.textContent = msg; err.style.display = 'block'; }
-    if (!v('fullName') || !v('phone') || !v('email') || !v('bMonth') || !v('bDay') || !v('groupSize')) return fail(t.errFields);
+    if (!v('fullName') || !v('phone') || !v('email') || !v('bMonth') || !v('bDay')) return fail(t.errFields);
     if (!document.getElementById('adult').checked) return fail(t.errAdult);
     if (!document.getElementById('consent').checked) return fail(t.errConsent);
     err.style.display = 'none';
@@ -255,7 +247,6 @@
       email: v('email'),
       birthday: v('bMonth') + '/' + v('bDay'),
       address: v('address'),
-      groupSize: v('groupSize'),
       language: lang.toUpperCase(),
       adult18: true,
       consentWording: T[lang].consent
