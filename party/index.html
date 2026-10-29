@@ -1,0 +1,274 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Noche Latina Check-In</title>
+<style>
+  :root{
+    --navy:#0C2C42;
+    --deep-navy:#081E2E;
+    --gold:#C9973A;
+    --orange:#D9692B;
+    --cream:#FAF6EF;
+    --white:#FFFFFF;
+    --gray:#828282;
+    --light-gray:#CCCCCC;
+    --text:#1a1a1a;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0; font-family:'Poppins','Montserrat',Arial,sans-serif; background:var(--cream); color:var(--text);}
+  .topbar{background:var(--navy); padding:16px 20px; display:flex; align-items:center; justify-content:space-between; gap:10px;}
+  .logo-kw{color:#9fb0c2; font-weight:800; font-size:20px; letter-spacing:1px;}
+  .logo-cary{color:var(--white); font-weight:800; font-size:20px; letter-spacing:1px; margin-left:2px;}
+  .logo-sub{color:#9fb0c2; font-size:9px; letter-spacing:2px; margin-top:-2px;}
+  .lang{display:flex; gap:6px;}
+  .lang button{background:transparent; border:1px solid #9fb0c2; color:#9fb0c2; border-radius:14px; padding:5px 12px; font-weight:700; font-size:12px; cursor:pointer;}
+  .lang button.on{background:var(--gold); border-color:var(--gold); color:var(--navy);}
+  .stripe{height:6px; background:linear-gradient(90deg,var(--orange),var(--gold));}
+  .wrap{max-width:480px; margin:0 auto; padding:24px 20px 60px;}
+  .headline{font-weight:800; font-size:14px; letter-spacing:1.5px; text-transform:uppercase; color:var(--orange); margin:0 0 4px;}
+  h1{font-size:26px; margin:0 0 8px; line-height:1.2; color:var(--navy);}
+  .sub{color:#444; font-size:14px; line-height:1.5; margin:0 0 6px;}
+  .rules{background:var(--white); border-left:4px solid var(--gold); padding:10px 12px; font-size:13px; color:#333; margin:14px 0 4px; line-height:1.5;}
+  label{display:block; font-weight:700; font-size:13px; margin:18px 0 6px; color:var(--navy);}
+  .opt{font-weight:400; color:var(--gray);}
+  input[type=text], input[type=tel], input[type=email], select{
+    width:100%; padding:12px 14px; font-size:16px; border:1px solid var(--light-gray); border-radius:6px; background:var(--white);
+  }
+  .row2{display:flex; gap:10px;}
+  .row2 > *{flex:1;}
+  .check{display:flex; gap:10px; align-items:flex-start; margin-top:20px; font-size:13px; line-height:1.5; color:#333;}
+  .check input{width:20px; height:20px; margin-top:2px; flex:none;}
+  .submit-btn{
+    width:100%; margin-top:26px; padding:15px; background:var(--navy); color:var(--white); border:none;
+    border-radius:6px; font-size:16px; font-weight:800; letter-spacing:0.5px; cursor:pointer; text-transform:uppercase;
+  }
+  .submit-btn:disabled{opacity:0.5;}
+  .err{color:#B40101; font-size:13px; margin-top:10px; display:none;}
+  .thankyou{display:none; text-align:center; padding:50px 10px;}
+  .thankyou .big{font-size:56px; line-height:1;}
+  .thankyou h2{font-size:26px; color:var(--navy); margin:14px 0 8px;}
+  .thankyou p{color:#444; font-size:15px; line-height:1.5;}
+  .foot{margin-top:36px; text-align:center; color:var(--gray); font-size:11px; line-height:1.6;}
+  .loading{text-align:center; padding:60px 20px; color:var(--gray);}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div>
+    <div><span class="logo-kw">kw</span><span class="logo-cary">CARY</span></div>
+    <div class="logo-sub">KELLERWILLIAMS. REALTY</div>
+  </div>
+  <div class="lang">
+    <button id="btnEn" class="on" type="button">EN</button>
+    <button id="btnEs" type="button">ES</button>
+  </div>
+</div>
+<div class="stripe"></div>
+
+<div class="wrap">
+  <div id="loading" class="loading">Loading...</div>
+
+  <div id="formArea" style="display:none;">
+    <p class="headline" data-i18n="headline"></p>
+    <h1 data-i18n="title"></h1>
+    <p class="sub" data-i18n="sub"></p>
+    <div class="rules" data-i18n="rules"></div>
+
+    <label><span data-i18n="name"></span> *</label>
+    <input type="text" id="fullName" autocomplete="name">
+
+    <label><span data-i18n="phone"></span> *</label>
+    <input type="tel" id="phone" autocomplete="tel" placeholder="(919) 555-0123">
+
+    <label><span data-i18n="email"></span> *</label>
+    <input type="email" id="email" autocomplete="email">
+
+    <label><span data-i18n="birthday"></span> *</label>
+    <div class="row2">
+      <select id="bMonth"></select>
+      <select id="bDay"></select>
+    </div>
+
+    <label><span data-i18n="address"></span> <span class="opt" data-i18n="optional"></span></label>
+    <input type="text" id="address" autocomplete="street-address">
+
+    <label><span data-i18n="group"></span> *</label>
+    <select id="groupSize"></select>
+
+    <div class="check">
+      <input type="checkbox" id="adult">
+      <span data-i18n="adultCheck"></span>
+    </div>
+    <div class="check">
+      <input type="checkbox" id="consent">
+      <span id="consentText"></span>
+    </div>
+
+    <div class="err" id="errMsg"></div>
+    <button class="submit-btn" id="submitBtn" data-i18n="submit"></button>
+
+    <div class="foot">
+      Freddy &amp; Maria Rodriguez · El Dorado Home Group<br>
+      Keller Williams Realty Cary · 525 New Waverly Pl Ste 202, Cary, NC 27518<br>
+      Each office is independently owned and operated. Equal Housing Opportunity.
+    </div>
+  </div>
+
+  <div class="thankyou" id="thankyou">
+    <div class="big">🎃</div>
+    <h2 id="tyTitle"></h2>
+    <p id="tyMsg"></p>
+  </div>
+</div>
+
+<script>
+  var API_URL = "https://script.google.com/macros/s/AKfycbzXwrDB3n3rhZpZs9s6HKV8IJZKUHd76YAuIV5Kg2gEJRtktVx62J3rgMwSR_vYrJHVUg/exec";
+  // Party check-ins ride on the open house backend: one OpenHouses row with this token.
+  var params = new URLSearchParams(window.location.search);
+  var token = params.get('t') || 'event-noche-latina-2026';
+  var STORE_KEY = 'nl2026_entered_' + token;
+
+  var T = {
+    en: {
+      headline: 'Noche Latina Halloween Party',
+      title: 'Welcome! Check in for the basket raffle',
+      sub: 'Thanks for celebrating with us tonight. Check in below and you are entered to win one of our three gift baskets.',
+      rules: 'Adults 18 and older only. One entry per person, and each adult in your group can check in on their own phone. Winners are drawn tonight and must be present to win.',
+      name: 'Full Name', phone: 'Phone Number', email: 'Email Address',
+      birthday: 'Birthday', month: 'Month', day: 'Day',
+      address: 'Home Address', optional: '(optional, for our holiday card)',
+      group: 'How many people are with you tonight, including you?',
+      adultCheck: 'I am 18 or older.',
+      consent: 'By checking in, I agree that Freddy and Maria Rodriguez of Keller Williams Realty Cary may contact me by phone, text, or email, including photos from tonight and future events. Message and data rates may apply. Reply STOP at any time to opt out.',
+      submit: 'Check In and Enter',
+      errFields: 'Please fill in your name, phone, email, birthday, and group size.',
+      errAdult: 'The raffle is for adults 18 and older. Please check the box to confirm.',
+      errConsent: 'Please check the box to agree so we can reach you if you win.',
+      tyTitle: 'You are entered, good luck!',
+      tyMsg: 'Enjoy the party. Winners are drawn around 8:00 PM, so stick around.',
+      tyAgain: 'You already checked in from this phone, you are entered. Each adult can check in on their own phone.',
+      bad: 'This check-in link is not active. Please ask Freddy or Maria for help.',
+      months: ['January','February','March','April','May','June','July','August','September','October','November','December']
+    },
+    es: {
+      headline: 'Fiesta de Halloween Noche Latina',
+      title: '¡Bienvenidos! Regístrense para la rifa de canastas',
+      sub: 'Gracias por celebrar con nosotros esta noche. Regístrense aquí y participan para ganar una de nuestras tres canastas de regalo.',
+      rules: 'Solo adultos de 18 años o más. Una participación por persona, y cada adulto de su grupo puede registrarse en su propio teléfono. Los ganadores se sortean esta noche y deben estar presentes para ganar.',
+      name: 'Nombre completo', phone: 'Teléfono', email: 'Correo electrónico',
+      birthday: 'Cumpleaños', month: 'Mes', day: 'Día',
+      address: 'Dirección de su casa', optional: '(opcional, para nuestra tarjeta navideña)',
+      group: '¿Cuántas personas vienen con usted esta noche, incluyéndose?',
+      adultCheck: 'Tengo 18 años o más.',
+      consent: 'Al registrarme, acepto que Freddy y Maria Rodriguez de Keller Williams Realty Cary me contacten por teléfono, mensaje de texto o correo electrónico, incluyendo fotos de esta noche y futuros eventos. Pueden aplicar tarifas de mensajes y datos. Responda STOP en cualquier momento para no recibir más mensajes.',
+      submit: 'Registrarme y participar',
+      errFields: 'Por favor llene su nombre, teléfono, correo, cumpleaños y cuántas personas vienen.',
+      errAdult: 'La rifa es para adultos de 18 años o más. Por favor marque la casilla para confirmar.',
+      errConsent: 'Por favor marque la casilla para aceptar y así poder avisarle si gana.',
+      tyTitle: '¡Ya está participando, buena suerte!',
+      tyMsg: 'Disfruten la fiesta. Los ganadores se sortean alrededor de las 8:00 PM, así que quédense.',
+      tyAgain: 'Ya se registró desde este teléfono, ya está participando. Cada adulto puede registrarse en su propio teléfono.',
+      bad: 'Este enlace no está activo. Por favor pídale ayuda a Freddy o Maria.',
+      months: ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre']
+    }
+  };
+  var lang = (navigator.language || '').toLowerCase().indexOf('es') === 0 ? 'es' : 'en';
+
+  function fillSelects() {
+    var t = T[lang];
+    var m = document.getElementById('bMonth'), d = document.getElementById('bDay'), g = document.getElementById('groupSize');
+    var mv = m.value, dv = d.value, gv = g.value;
+    m.innerHTML = '<option value="">' + t.month + '</option>' + t.months.map(function(x, i) { return '<option value="' + (i + 1) + '">' + x + '</option>'; }).join('');
+    var days = '<option value="">' + t.day + '</option>';
+    for (var i = 1; i <= 31; i++) days += '<option value="' + i + '">' + i + '</option>';
+    d.innerHTML = days;
+    var gs = '<option value=""></option>';
+    for (var j = 1; j <= 10; j++) gs += '<option value="' + j + '">' + j + (j === 10 ? '+' : '') + '</option>';
+    g.innerHTML = gs;
+    m.value = mv; d.value = dv; g.value = gv;
+  }
+
+  function applyLang() {
+    var t = T[lang];
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(function(el) { el.textContent = t[el.getAttribute('data-i18n')]; });
+    document.getElementById('consentText').textContent = t.consent;
+    document.getElementById('btnEn').classList.toggle('on', lang === 'en');
+    document.getElementById('btnEs').classList.toggle('on', lang === 'es');
+    fillSelects();
+    if (document.getElementById('thankyou').style.display === 'block') showThanks(alreadyEntered());
+  }
+  document.getElementById('btnEn').onclick = function() { lang = 'en'; applyLang(); };
+  document.getElementById('btnEs').onclick = function() { lang = 'es'; applyLang(); };
+
+  function alreadyEntered() { try { return !!localStorage.getItem(STORE_KEY); } catch (e) { return false; } }
+  function showThanks(again) {
+    var t = T[lang];
+    document.getElementById('formArea').style.display = 'none';
+    document.getElementById('thankyou').style.display = 'block';
+    document.getElementById('tyTitle').textContent = t.tyTitle;
+    document.getElementById('tyMsg').textContent = again ? t.tyAgain : t.tyMsg;
+  }
+
+  function jsonp(url, cb) {
+    var cbName = 'nlcb_' + Date.now();
+    var script = document.createElement('script');
+    window[cbName] = function(data) { cb(data); delete window[cbName]; script.remove(); };
+    script.src = url + (url.indexOf('?') >= 0 ? '&' : '?') + 'callback=' + cbName;
+    document.body.appendChild(script);
+  }
+
+  applyLang();
+  jsonp(API_URL + '?t=' + encodeURIComponent(token), function(resp) {
+    document.getElementById('loading').style.display = 'none';
+    if (!resp.ok) {
+      document.getElementById('formArea').style.display = 'block';
+      var err = document.getElementById('errMsg');
+      err.textContent = T[lang].bad;
+      err.style.display = 'block';
+      document.getElementById('submitBtn').disabled = true;
+      return;
+    }
+    if (alreadyEntered()) { showThanks(true); return; }
+    document.getElementById('formArea').style.display = 'block';
+  });
+
+  document.getElementById('submitBtn').addEventListener('click', function() {
+    var t = T[lang];
+    var v = function(id) { return document.getElementById(id).value.trim(); };
+    var err = document.getElementById('errMsg');
+    function fail(msg) { err.textContent = msg; err.style.display = 'block'; }
+    if (!v('fullName') || !v('phone') || !v('email') || !v('bMonth') || !v('bDay') || !v('groupSize')) return fail(t.errFields);
+    if (!document.getElementById('adult').checked) return fail(t.errAdult);
+    if (!document.getElementById('consent').checked) return fail(t.errConsent);
+    err.style.display = 'none';
+    document.getElementById('submitBtn').disabled = true;
+
+    // Mapped onto the open house CheckIns columns (no backend change needed):
+    // workingWithAgent = marker, agentName = birthday, agentBrokerage = address,
+    // wantsSimilarHomes = group size, consentToText stays "No" so the open house
+    // text watcher never picks these rows up; the contact consent is recorded in consentWording.
+    var payload = {
+      action: 'submitCheckIn',
+      token: token,
+      fullName: v('fullName'),
+      phone: v('phone'),
+      email: v('email'),
+      workingWithAgent: 'Party check-in (' + lang.toUpperCase() + ')',
+      agentName: 'Birthday ' + v('bMonth') + '/' + v('bDay'),
+      agentBrokerage: v('address') ? 'Address ' + v('address') : '',
+      wantsSimilarHomes: 'Group ' + v('groupSize'),
+      consentToText: 'No',
+      consentWording: 'Party contact consent: AGREED. Adult 18+: YES. Wording: ' + T[lang].consent
+    };
+    fetch(API_URL, { method: 'POST', mode: 'no-cors', body: JSON.stringify(payload) }).catch(function() {});
+    try { localStorage.setItem(STORE_KEY, '1'); } catch (e) {}
+    showThanks(false);
+  });
+</script>
+
+</body>
+</html>
