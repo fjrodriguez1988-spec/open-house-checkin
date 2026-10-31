@@ -19,6 +19,8 @@
     margin:0; font-family:'Poppins','Montserrat',Arial,sans-serif; background:var(--white); color:var(--text);
   }
   .topbar{background:var(--navy); padding:18px 20px 14px; display:flex; flex-direction:column; align-items:center; gap:10px;}
+  .topbar{visibility:hidden;}
+  body.ready .topbar{visibility:visible;}
   .logo-img{width:200px; max-width:60%; height:auto; display:block;}
   .powered-top{display:flex; align-items:baseline; gap:6px; flex-wrap:wrap; justify-content:center;}
   .powered-top small{color:#9fb0c2; font-size:9px; letter-spacing:2px; text-transform:uppercase;}
@@ -171,6 +173,13 @@
       selections.consentToText = 'No';
       ['consentLabel', 'consentFine'].forEach(function(id) { document.getElementById(id).style.display = 'none'; });
       document.getElementById('consentLabel').nextElementSibling.style.display = 'none';
+      // Guest host: KW Cary logo only, no El Dorado Home Group branding.
+      document.querySelector('.logo-img').style.display = 'none';
+      var pt = document.querySelector('.powered-top');
+      pt.querySelector('small').style.display = 'none';
+      pt.querySelector('.p-kw').style.fontSize = '30px';
+      pt.querySelector('.p-sub').style.fontSize = '10px';
+      pt.style.flexDirection = 'column'; pt.style.alignItems = 'center'; pt.style.gap = '2px';
       var sub = document.querySelector('.sub');
       sub.textContent = 'Hosted by ' + hostFirst() + ', Keller Williams Realty Cary. Please take a quick moment to check in before touring the property. ' + hostFirst().split(' ')[0] + ' will follow up with you personally.';
       return;
@@ -212,6 +221,7 @@
       openHouse = resp.data;
       document.getElementById('addressLine').textContent = openHouse.address;
       setupConsent();
+      document.body.classList.add('ready');
       document.getElementById('formArea').style.display = 'block';
     });
   }
@@ -276,6 +286,7 @@
       document.getElementById('thankyouMsg').textContent = 'Enjoy your tour. ' + hostFirst() + ' is texting you now. Questions about the home? Just ask.';
     }
   });
+  setTimeout(function() { document.body.classList.add('ready'); }, 4000);
 </script>
 
 </body>
