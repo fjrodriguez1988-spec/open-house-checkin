@@ -18,10 +18,10 @@
   body{
     margin:0; font-family:'Poppins','Montserrat',Arial,sans-serif; background:var(--white); color:var(--text);
   }
-  .topbar{background:var(--navy); padding:18px 20px; display:flex; align-items:center; justify-content:space-between; gap:10px;}
-  .logo-edhg{text-align:right; border-left:1px solid #C9A24B; padding-left:14px; line-height:1.15;}
-  .logo-edhg b{display:block; color:#E0B85A; font-weight:800; font-size:17px; letter-spacing:2px;}
-  .logo-edhg span{display:block; color:#E0B85A; font-size:10px; letter-spacing:3px; margin-top:2px;}
+  .topbar{background:var(--navy); padding:18px 20px; display:flex; align-items:center; justify-content:center; gap:10px;}
+  .logo-edhg{text-align:center; line-height:1.15;}
+  .logo-edhg b{display:block; color:#E0B85A; font-weight:800; font-size:26px; letter-spacing:4px;}
+  .logo-edhg span{display:block; color:#E0B85A; font-size:12px; letter-spacing:6px; margin-top:3px;}
   .logo-kw{color:#9fb0c2; font-weight:800; font-size:22px; letter-spacing:1px;}
   .logo-cary{color:var(--white); font-weight:800; font-size:22px; letter-spacing:1px; margin-left:2px;}
   .logo-sub{color:#9fb0c2; font-size:10px; letter-spacing:2px; margin-top:-2px;}
@@ -56,15 +56,16 @@
   .consent-fine{font-size:11px; color:#666; line-height:1.5; margin:10px 0 0;}
   .sms-btn{display:inline-block; margin-top:22px; padding:14px 22px; border:2px solid var(--navy); border-radius:6px; color:var(--navy); font-weight:800; text-decoration:none; text-transform:uppercase; letter-spacing:0.5px; font-size:14px;}
   .loading{text-align:center; padding:60px 20px; color:var(--gray);}
+  .powered{text-align:center; margin:34px 0 0; padding-top:18px; border-top:1px solid #e3e3e3;}
+  .powered small{display:block; color:var(--gray); font-size:10px; letter-spacing:2px; text-transform:uppercase; margin-bottom:6px;}
+  .powered .p-kw{color:var(--navy); font-weight:800; font-size:16px; letter-spacing:1px;}
+  .powered .p-kw i{font-style:normal; color:#9fb0c2;}
+  .powered .p-sub{color:var(--gray); font-size:8px; letter-spacing:2px; margin-top:-1px;}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-  <div>
-    <div><span class="logo-kw">kw</span><span class="logo-cary">CARY</span></div>
-    <div class="logo-sub">KELLERWILLIAMS. REALTY</div>
-  </div>
   <div class="logo-edhg"><b>EL DORADO</b><span>HOME GROUP</span></div>
 </div>
 <div class="redbar"></div>
@@ -117,6 +118,8 @@
 
     <div class="err" id="errMsg">Please fill in your name, phone, and email.</div>
     <button class="submit-btn" id="submitBtn">Check In</button>
+
+    <div class="powered"><small>Powered by</small><div class="p-kw">kw<i>CARY</i></div><div class="p-sub">KELLERWILLIAMS. REALTY</div></div>
 
     <div class="foot">
       Keller Williams Realty Cary · 525 New Waverly Pl Ste 202, Cary, NC 27518<br>
