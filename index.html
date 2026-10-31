@@ -162,8 +162,19 @@
 
   var consentWording = '';
   function hostFirst() { return (openHouse && openHouse.hostingAgent) || 'your agent'; }
+  function isGuestHost() { var h = (openHouse && openHouse.hostingAgent) || ''; return h !== '' && h !== 'Francisco' && h !== 'Maria'; }
   function hostFull() { return hostFirst() + ' Rodriguez'; }
   function setupConsent() {
+    if (isGuestHost()) {
+      // Another KW Cary agent hosting: no automated texts or emails, she follows up herself.
+      consentWording = 'Guest host check-in: no automated messages.';
+      selections.consentToText = 'No';
+      ['consentLabel', 'consentFine'].forEach(function(id) { document.getElementById(id).style.display = 'none'; });
+      document.getElementById('consentLabel').nextElementSibling.style.display = 'none';
+      var sub = document.querySelector('.sub');
+      sub.textContent = 'Hosted by ' + hostFirst() + ', Keller Williams Realty Cary. Please take a quick moment to check in before touring the property. ' + hostFirst().split(' ')[0] + ' will follow up with you personally.';
+      return;
+    }
     consentWording = 'By tapping Yes, I agree that ' + hostFull() + ' of Keller Williams Realty Cary may text me at the number above about this home and my home search, including with an automated system. Consent is not required to tour or buy a home. Message and data rates may apply. Reply STOP at any time to opt out.';
     document.getElementById('consentLabel').textContent = 'Would you like ' + hostFirst() + ' to text you about this home? *';
     document.getElementById('consentFine').textContent = consentWording;
