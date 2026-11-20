@@ -61,7 +61,7 @@
   .thankyou h2{font-size:24px; color:var(--navy);}
   .thankyou p{color:#555; font-size:15px; line-height:1.5;}
   .foot{margin-top:40px; text-align:center; color:var(--gray); font-size:11px; line-height:1.6;}
-  .consent-fine{font-size:11px; color:#666; line-height:1.5; margin:10px 0 0;}
+  .consent-fine{font-size:13px; color:#444; line-height:1.5; margin:16px 0 10px;}
   .sms-btn{display:inline-block; margin-top:22px; padding:14px 22px; border:2px solid var(--navy); border-radius:6px; color:var(--navy); font-weight:800; text-decoration:none; text-transform:uppercase; letter-spacing:0.5px; font-size:14px;}
   .loading{text-align:center; padding:60px 20px; color:var(--gray);}
   .powered{text-align:center; margin:34px 0 0; padding-top:18px; border-top:1px solid #e3e3e3;}
@@ -118,11 +118,6 @@
       </div>
     </div>
 
-    <label id="consentLabel">Would you like us to text you about this home? *</label>
-    <div class="choice-row">
-      <div class="choice-btn" data-field="consentToText" data-value="Yes">Yes, text me</div>
-      <div class="choice-btn" data-field="consentToText" data-value="No">No thanks</div>
-    </div>
     <p class="consent-fine" id="consentFine"></p>
 
     <div class="err" id="errMsg">Please fill in your name, phone, and email.</div>
@@ -165,14 +160,13 @@
   var consentWording = '';
   function hostFirst() { return (openHouse && openHouse.hostingAgent) || 'your agent'; }
   function isGuestHost() { var h = (openHouse && openHouse.hostingAgent) || ''; return h !== '' && h !== 'Francisco' && h !== 'Maria'; }
-  function hostFull() { return hostFirst() + ' Rodriguez'; }
+  function hostFull() { return hostFirst() === 'Francisco' ? 'Francisco (Freddy) Rodriguez' : hostFirst() + ' Rodriguez'; }
   function setupConsent() {
     if (isGuestHost()) {
       // Another KW Cary agent hosting: no automated texts or emails, she follows up herself.
       consentWording = 'Guest host check-in: no automated messages.';
       selections.consentToText = 'No';
-      ['consentLabel', 'consentFine'].forEach(function(id) { document.getElementById(id).style.display = 'none'; });
-      document.getElementById('consentLabel').nextElementSibling.style.display = 'none';
+      document.getElementById('consentFine').style.display = 'none';
       // Guest host: KW Cary logo only, no El Dorado Home Group branding.
       document.querySelector('.logo-img').style.display = 'none';
       var pt = document.querySelector('.powered-top');
@@ -184,8 +178,8 @@
       sub.textContent = 'Hosted by ' + hostFirst() + ', Keller Williams Realty Cary. Please take a quick moment to check in before touring the property. ' + hostFirst().split(' ')[0] + ' will follow up with you personally.';
       return;
     }
-    consentWording = 'By tapping Yes, I agree that ' + hostFull() + ' of Keller Williams Realty Cary may text me at the number above about this home and my home search, including with an automated system. Consent is not required to tour or buy a home. Message and data rates may apply. Reply STOP at any time to opt out.';
-    document.getElementById('consentLabel').textContent = 'Would you like ' + hostFirst() + ' to text you about this home? *';
+    consentWording = 'By tapping Check In, you agree that ' + hostFull() + ' of Keller Williams Realty Cary may contact you at the phone number and email address you provided, even if your number is on a federal, state, or internal Do Not Call list, and may send calls and texts to you using an automated system for selection or dialing of numbers or pre-recorded or artificial voice messages that relate to real estate products or services. Your consent is not required to purchase products or services. Reply STOP at any time to opt out.';
+    selections.consentToText = 'Yes';
     document.getElementById('consentFine').textContent = consentWording;
   }
   function setupSmsButton(firstName) {
@@ -247,8 +241,8 @@
     var email = document.getElementById('email').value.trim();
     var err = document.getElementById('errMsg');
 
-    if (!fullName || !phone || !email || !selections.workingWithAgent || !selections.consentToText) {
-      err.textContent = 'Please fill in your name, phone, email, and let us know if you\'re working with an agent and if you\'d like a text.';
+    if (!fullName || !phone || !email || !selections.workingWithAgent) {
+      err.textContent = 'Please fill in your name, phone, email, and let us know if you\'re working with an agent.';
       err.style.display = 'block';
       return;
     }
